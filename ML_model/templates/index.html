@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Co-Purchase Prediction</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .form-container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .result-card {
+            padding: 20px;
+            background-color: #f0f8ff;
+            border-radius: 10px;
+        }
+        .loading {
+            display: none;
+        }
+        .error-msg {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container form-container">
+        <h1 class="text-center">📚 Book Co-Purchase Predictor</h1>
+        <form method="POST" id="predictionForm">
+            <div class="form-group">
+                <label for="book1">Select Book 1:</label>
+                <select name="book1" id="book1" class="form-control" required>
+                    {% for id, title in book_options %}
+                        <option value="{{ id }}" {% if selected_titles[0] == title %}selected{% endif %}>
+                            {{ title[:80] }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="book2">Select Book 2:</label>
+                <select name="book2" id="book2" class="form-control" required>
+                    {% for id, title in book_options %}
+                        <option value="{{ id }}" {% if selected_titles[1] == title %}selected{% endif %}>
+                            {{ title[:80] }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block" onclick="showLoading()">🔍 Check Co-Purchase Likelihood</button>
+        </form>
+
+        <div id="loadingSpinner" class="loading text-center">
+            <div class="spinner-border text-primary" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+
+        {% if prediction %}
+        <div class="result-card">
+            <h3>Prediction Results</h3>
+            <p>The probability that a user will buy these two books together is:</p>
+            <h4>{{ (prediction * 100) | round(2) }}%</h4>
+        </div>
+        {% elif error %}
+        <div class="error-msg text-center">
+            <p>{{ error }}</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        function showLoading() {
+            document.getElementById('loadingSpinner').style.display = 'block';
+        }
+
+        document.getElementById("predictionForm").onsubmit = function() {
+            document.getElementById('loadingSpinner').style.display = 'block';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Recommendations</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .form-container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .result-card {
+            padding: 20px;
+            background-color: #f0f8ff;
+            border-radius: 10px;
+        }
+        .error-msg {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container form-container">
+        <h1 class="text-center">📚 Book Recommendations</h1>
+        <form method="POST">
+            <div class="form-group">
+                <label for="book1">Select Book:</label>
+                <select name="book1" id="book1" class="form-control" required>
+                    {% for id, title in book_options %}
+                        <option value="{{ id }}" {% if selected_title == title %}selected{% endif %}>
+                            {{ title[:80] }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Get Recommendations</button>
+        </form>
+    
+        {% if recommendations %}
+        <div class="result-card">
+            <h3>📚 Recommended Books:</h3>
+            <ul>
+                {% for title, prob in recommendations %}
+                    <li><strong>{{ title }}</strong> - Probability: {{ prob | round(4) }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% elif error %}
+            <div class="error-msg text-center">
+                <p>{{ error }}</p>
+            </div>
+        {% endif %}
+    </div>    
+</body>
+</html>
